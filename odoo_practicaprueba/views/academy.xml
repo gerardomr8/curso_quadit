@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<!-- 
+		<record model="ir.ui.view" id="">
+			<field name='name'><field>
+			<field name='model'><field>
+			<field name='type'><field>
+			<field name='arch'>
+				<tree string="Listado de estudiantes"
+					<field name=""/>
+					<field name=""/>
+			<field>
+		</record>
+
+		Estructura de la vista de Odoo
+		<record model="ir.ui.view" id="">
+			<field name='name'></field>
+			<field name='model'></field>
+			<field name='type'></field>
+			<field name="arch" type="xml"></field>
+		</record> -->
+
+		<!-- Inicia video 4 -->
+
+		<record model="ir.ui.view" id="tree_student_id">
+			<field name="name">academia.student.tree</field>
+			<field name="model">academia.student</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Listado de estudiantes">
+					<field name="name"/>
+					<field name="last_name"/>
+					<field name="create_date"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="academy_student_form">
+			<field name="name">academia.student.form</field>
+			<field name="model">academia.student</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Listado de estudiantes">
+					<header>
+						<field name="state" widget="statusbar"/>
+					</header>
+
+					<shet>
+						<field name="photo" widget="image"
+						class="oe_avatar" options="
+						{&quot;prewiev_image&quot;:
+						&quot;image_medium&quot;,
+						&quot;size&quot;:[90, 90]}"/>
+
+						<group colspan="4">
+							<field name="name"/>
+							<field name="last_name"/>
+							<field name="curp" placeholder="MIR941105HVZXYR04"/>
+							<field name="age"/>
+							<field name="create_date"/>
+							<field name="active"/>
+							<field name="partner_id"/>
+							<field name="country"/>
+						</group>
+
+						<!--Inicia video 5-->
+						<group>
+							<notebook>
+								<!-- Falla-->
+								<page string="Calificaciones">
+									<field name="calificaciones_id">
+										<tree string="Calificaciones" editable="bottom">
+											<field name="name" required="True"/>
+											<field name="calificacion" required="True"/>
+										</tree>
+									</field>
+								</page>
+								<!-- Falla-->
+								<page string="Facturas">
+									<field name="invoice_ids"/>
+								</page>
+								<page string="Comentarios">
+									<field name="note"/>
+								</page>
+							</notebook>
+						</group>
+					</shet>
+					
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+			
+				</form>
+			</field>
+		</record>
+		<!-- Temina video 4-->
+
+
+
+		<record model="ir.actions.act_window" id="act_student_academia">
+			<field name="name">Registro de estudiantes</field>
+			<field name="res_model">academia.student</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="act_config_academia">
+			<field name="name">Materias</field>
+			<field name="res_model">academia.calificacion</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="id_principal_academia" name="Odoo Practica Academia" />
+
+		<menuitem  id="id_menu_student" parent="id_principal_academia" name="Registros" sequence="0"/>
+
+		<menuitem id="id_menu_student_act" parent="id_principal_academia" name="Estudiantes" action="act_student_academia" sequence="0"/>
+
+		<!-- Aquí acaba video 3-->
+
+		<menuitem  id="id_menu_config" parent="id_principal_academia" name="Configuracion	" sequence="1"/>
+
+		<menuitem id="id_menu_config_act" parent="id_principal_academia"  action="act_config_academia" sequence="0"/>
+
+	</data>
+</odoo>
