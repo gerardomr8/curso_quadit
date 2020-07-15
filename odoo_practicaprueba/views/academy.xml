@@ -1,25 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<data>
-		<!-- 
-		<record model="ir.ui.view" id="">
-			<field name='name'><field>
-			<field name='model'><field>
-			<field name='type'><field>
-			<field name='arch'>
-				<tree string="Listado de estudiantes"
-					<field name=""/>
-					<field name=""/>
-			<field>
+		<record model="product.category" id="category_student">
+			<field name="name">FacturacionColegiatura</field>
 		</record>
 
-		Estructura de la vista de Odoo
-		<record model="ir.ui.view" id="">
-			<field name='name'></field>
-			<field name='model'></field>
-			<field name='type'></field>
-			<field name="arch" type="xml"></field>
-		</record> -->
+		<record id="wizard_student_invoice" model="ir.ui.view">
+			<field name="name">make.student.invoice.form</field>
+			<field name="model">make.student.invoice</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Asistente para Generacion de Factura">
+					<header></header>
+					<sheet>
+						<separator string="Introduce el Diario para la Factura"/>
+						<field name="journal_id" required="1"/>
+					</sheet>
+					<footer>
+						<div align="center">
+							<button name="make_invoice" string="Generar" type="object"/>
+							<button special="cancel" string="Cerrar" type="object"/>
+						</div>
+					</footer>
+				</form>
+			</field>
+		</record>
+
+		<act_window	name="Generacion de Facturacion" res_model="make.student.invoice"
+			src_model="academia.student" view_mode="form" target="new" 
+			key2="client_action_multi" id="student_invoice_act"/>
 
 		<!-- Inicia video 4 -->
 
@@ -43,6 +52,10 @@
 			<field name="arch" type="xml">
 				<form string="Listado de estudiantes">
 					<header>
+						<button string="Confirmar" name="confirm" type="object" states="draft"/>
+						<button string="Cancelar" name="cancel" type="object" states="draft"/>
+						<button string="Egresar" name="done" type="object" states="process"/>
+						<button string="Borrador" name="draft" type="object" states="cancel"/>
 						<field name="state" widget="statusbar"/>
 					</header>
 
@@ -54,7 +67,7 @@
 						&quot;size&quot;:[90, 90]}"/>
 
 						<group colspan="4">
-							<field name="name"/>
+							<field name="name" attrs="{'readonly':[('state','!=','draft')]}"/>
 							<field name="last_name"/>
 							<field name="curp" placeholder="MIR941105HVZXYR04"/>
 							<field name="age"/>
@@ -62,6 +75,7 @@
 							<field name="active"/>
 							<field name="partner_id"/>
 							<field name="country"/>
+							<field name="grado_id"/>
 						</group>
 
 						<!--Inicia video 5-->
@@ -76,7 +90,9 @@
 										</tree>
 									</field>
 								</page>
-								<!-- Falla-->
+								<group class="oe_subtotal_footeroe_right" colspan="2" name="grupo promedio">
+									<field name="promedio"/>
+								</group>
 								<page string="Facturas">
 									<field name="invoice_ids"/>
 								</page>
@@ -98,16 +114,103 @@
 		<!-- Temina video 4-->
 
 
+		<record model="ir.ui.view" id="pivot_student_tree">
+			<field name="name">academia.student.pivot</field>
+			<field name="model">academia.student</field>
+			<field name="type">pivot</field>
+			<field name="arch" type="xml">
+				<pivot string="Facturacion por Escuela">
+					<field name="create_date" type="row"/>
+					<field name="amount_invoice" type="measure"/>
+					<field name="partner_id" type="row"/>
+				</pivot>
+			</field>
+		</record>
+
+
+		<record model="ir.ui.view" id="graph_student_tree">
+			<field name="name">academia.student.graph</field>
+			<field name="model">academia.student</field>
+			<field name="type">graph</field>
+			<field name="arch" type="xml">
+				<graph string="Facturacion por Escuela">
+					<field name="partner_id"/>
+					<field name="amount_invoice" type="measure"/>
+				</graph>
+			</field>
+		</record>
+
 
 		<record model="ir.actions.act_window" id="act_student_academia">
 			<field name="name">Registro de estudiantes</field>
 			<field name="res_model">academia.student</field>
-			<field name="view_mode">tree,form</field>
+			<field name="view_mode">tree,form,pivot,graph</field>
 		</record>
 
 		<record model="ir.actions.act_window" id="act_config_academia">
 			<field name="name">Materias</field>
 			<field name="res_model">academia.calificacion</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+
+		<!--Video 004 x 1 Aplicando otros atributos -->
+
+		<record model="ir.actions.act_window" id="act_config_academia">
+			<field name="name">Materias</field>
+			<field name="res_model">academia.calificacion</field>
+			<field name="view_mode">tree,form</field>
+			<field name="arch" type="xml">
+				<tree string="Listado de estudiantes">
+					<field name="name"/>
+					<field name="last_name"/>
+				</tree>
+			</field>
+		</record>
+
+		<!--Video 004 x 2 Aplicando otros atributos -->
+
+		<record model="ir.ui.view" id="tree_grados_id">
+			<field name="name">academia.grado.tree</field>
+			<field name="model">academia.grado</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Grados">
+					<field name="complete_name"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="academia_grado">
+			<field name="name">academia.grado.form</field>
+			<field name="model">academia.grado</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Grado">
+					<header></header>
+					<sheet>
+						<group>
+							<field name="name"/>
+							<field name="grupo"/>
+						</group>
+						<notebook>
+							<page>
+								<field name="materia_ids">
+									<tree string="Materias" editable="bottom">
+										<field name="materia_id"/>
+									</tree>
+								</field>
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+
+		<record model="ir.actions.act_window" id="act_config_grados">
+			<field name="name">Grados</field>
+			<field name="res_model">academia.grado</field>
 			<field name="view_mode">tree,form</field>
 		</record>
 
@@ -119,9 +222,12 @@
 
 		<!-- Aquí acaba video 3-->
 
-		<menuitem  id="id_menu_config" parent="id_principal_academia" name="Configuracion	" sequence="1"/>
+		<menuitem  id="id_menu_config" parent="id_principal_academia" name="Configuracion" sequence="1"/>
 
-		<menuitem id="id_menu_config_act" parent="id_principal_academia"  action="act_config_academia" sequence="0"/>
+		<!--<menuitem id="id_menu_config_act" parent="id_principal_academia"  action="act_config_academia" sequence="0"/>-->
+		<menuitem id="id_menu_calificacion_act" parent="id_menu_config" name="Materias" action="act_config_academia" sequence="0"/>
+
+		<menuitem id="id_menu_grado_act" parent="id_menu_config" name="Grados" action="act_config_grados" sequence="0"/>
 
 	</data>
 </odoo>
