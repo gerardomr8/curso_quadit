@@ -119,15 +119,6 @@ class res_partner(models.Model):
 		string='Vendor Payment Terms',
 		help="This payment term will be used instead of the default one for purchase orders and vendor bills", oldname="property_supplier_payment_term", track_visibility='onchange')
 
-	#@api.depends('is_company')
-    #def _compute_company_type(self):
-    #	res = super(res_partner, self)._compute_company_type()
-    #	print("RES", res)
-    #	return res
-
-    #def _write_company_type(self):
-    #    for partner in self:
-    #        partner.is_company = partner.company_type == 'company'
 
 class academia_student(models.Model):
 	_inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
@@ -186,7 +177,7 @@ class academia_student(models.Model):
 
 	promedio = fields.Float('Promedio', digits=(14,2), compute="calcula_promedio")
 
-	amount_invoice = fields.Float('Monto Facturado', digits=(14,2), compute="calcula_amount")
+	amount_invoice = fields.Float('Monto Facturado', digits=(14,2), compute="calcula_amount", store=True)
 
 	@api.onchange('grado_id')
 	def onchange_grado(self):
@@ -251,17 +242,3 @@ class academia_student(models.Model):
 	def draft(self):
 		self.state = 'draft'
 		return True
-
-
-
-# class curso_odoo/odoo_practicaprueba(models.Model):
-#     _name = 'curso_odoo/odoo_practicaprueba.curso_odoo/odoo_practicaprueba'
-
-#     name = fields.Char()
-#     value = fields.Integer()
-#     value2 = fields.Float(compute="_value_pc", store=True)
-#     description = fields.Text()
-#
-#     @api.depends('value')
-#     def _value_pc(self):
-#         self.value2 = float(self.value) / 100
